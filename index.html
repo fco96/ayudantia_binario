@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Ayudantia binario by fco96</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Ayudantia binario</h1>
+        <p></p>
+
+        <p class="view"><a href="https://github.com/fco96/ayudantia_binario">View the Project on GitHub <small>fco96/ayudantia_binario</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/fco96/ayudantia_binario/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/fco96/ayudantia_binario/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/fco96/ayudantia_binario">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="ayudantia-binario" class="anchor" href="#ayudantia-binario" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ayudantia binario</h1>
+
+<p>Por <a href="https://github.com/fco96">Francisco Olivares</a></p>
+
+<h2>
+<a id="explicación" class="anchor" href="#explicaci%C3%B3n" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Explicación</h2>
+
+<p>Para el manejo de archivos (en binario) C nos provee de 2 funciones <em>fread</em> y <em>fwrite</em>, las cuales están organizadas de la siguiente manera:</p>
+
+<div class="highlight highlight-source-c"><pre><span class="pl-en">fread</span>(d,t,n,fp);</pre></div>
+
+<p>Donde <code>d</code> es el la dirección del destino donde se desea guardar lo que se lea, <code>t</code> es el tamaño de cada elemento (en bits) que se está leyendo, <code>n</code> es el número de elementos que se leen y <code>fp</code> es un puntero al archivo desde el cual se lee.</p>
+
+<div class="highlight highlight-source-c"><pre><span class="pl-en">fwrite</span>(d,t,n,fp);</pre></div>
+
+<p>Donde <code>d</code> es el la dirección de la variable(s) a escribir, <code>t</code> es el tamaño de cada elemento (en bits) que se va a escribir, <code>n</code> es el número de elementos que se escriben y <code>fp</code> es un puntero al archivo en donde se escribirá.</p>
+
+<h2>
+<a id="ejemplos" class="anchor" href="#ejemplos" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ejemplos</h2>
+
+<h3>
+<a id="ejemplo-1" class="anchor" href="#ejemplo-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ejemplo 1</h3>
+
+<p>Digamos que se quiere escribir una variable de tipo <code>int</code> llamado contador en un archivo (salida.txt) entonces se tendría que escribir algo similar lo siguiente</p>
+
+<div class="highlight highlight-source-c"><pre><span class="pl-k">int</span> contador=<span class="pl-c1">9999</span>;
+<span class="pl-c1">FILE</span> *fp=fopen(<span class="pl-s"><span class="pl-pds">"</span>salida.txt<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span>);
+<span class="pl-en">fwrite</span>(&amp;contador,<span class="pl-k">sizeof</span>(<span class="pl-k">int</span>),1,fp);
+<span class="pl-en">fclose</span>(fp);</pre></div>
+
+<p>Notar que el parámetro <code>d</code> es una direccion de memoria entonces por eso entra <code>&amp;contador</code>, se asume que el archivo salida.txt no estaba creado por eso se le da la opción <code>"w"</code>.</p>
+
+<h3>
+<a id="ejemplo-2" class="anchor" href="#ejemplo-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ejemplo 2</h3>
+
+<p>Digamos que se quiere leer una variable desde un archivo (input.txt) de tipo <code>float</code> y almacenarla entonces el codigo sería</p>
+
+<div class="highlight highlight-source-c"><pre><span class="pl-k">float</span> constante;
+<span class="pl-c1">FILE</span> *fp=fopen(<span class="pl-s"><span class="pl-pds">"</span>input.txt<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>r<span class="pl-pds">"</span></span>);
+<span class="pl-en">fread</span>(&amp;constante,<span class="pl-k">sizeof</span>(<span class="pl-k">float</span>),1,fp);
+<span class="pl-en">fclose</span>(fp);</pre></div>
+
+<h3>
+<a id="ejemplo-3-caso-general-de-escritura" class="anchor" href="#ejemplo-3-caso-general-de-escritura" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ejemplo 3 (Caso General de escritura)</h3>
+
+<p>Se desea generar un programa el cual escriba en memoria un arreglo de 10 espacios de tipo de dato libro.</p>
+
+<div class="highlight highlight-source-c"><pre><span class="pl-k">typedef</span> <span class="pl-k">struct</span> a{
+<span class="pl-k">char</span> *autor,*editorial;
+<span class="pl-k">int</span> numero_paginas, anio_emision;  
+}libro;
+libro arreglo[<span class="pl-c1">10</span>]; <span class="pl-c">// tambien podria ser *puntero</span>
+<span class="pl-c1">FILE</span> *fp=fopen(<span class="pl-s"><span class="pl-pds">"</span>salida.txt<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>w<span class="pl-pds">"</span></span>);
+<span class="pl-en">fwrite</span>(arreglo,<span class="pl-k">sizeof</span>(libro),10,fp); <span class="pl-c">// en vez de arreglo ponen puntero</span>
+<span class="pl-en">fclose</span>(fp);</pre></div>
+
+<p>Notar que <code>d</code> recibe una dirección de memoria desde donde se va a empezar a escribir y el nombre de <strong>un arreglo es un puntero implícito a la base de este</strong> entonces por eso va <code>arreglo</code> y <strong>no</strong> <code>&amp;arreglo.</code>. Existe la posibilidad de ocupar <code>puntero</code> en ves de <code>arreglo[10]</code> siempre y cuando el <code>puntero</code> apunte a un arreglo de 10 libros.</p>
+
+<h3>
+<a id="ejemplo-4-caso-general-de-lectura" class="anchor" href="#ejemplo-4-caso-general-de-lectura" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ejemplo 4 (Caso General de lectura)</h3>
+
+<p>Se desea escribir un programa que cargue desde un archivo una arreglo de libros a una variable, da la casualidad que usted sabe que dicho arreglo es de 10 espacios ;)</p>
+
+<div class="highlight highlight-source-c"><pre><span class="pl-k">typedef</span> <span class="pl-k">struct</span> a{
+<span class="pl-k">char</span> *autor,*editorial;
+<span class="pl-k">int</span> numero_paginas, anio_emision;  
+}libro;
+libro arreglo_a_cargar[<span class="pl-c1">10</span>]; <span class="pl-c">// tambien podria ser *puntero</span>
+<span class="pl-c1">FILE</span> *fp=fopen(<span class="pl-s"><span class="pl-pds">"</span>input.txt<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>r<span class="pl-pds">"</span></span>);
+<span class="pl-en">fread</span>(arreglo_a_cargar,<span class="pl-k">sizeof</span>(libro),10,fp); <span class="pl-c">// en vez de arreglo_a_cargar ponen puntero</span>
+<span class="pl-en">fclose</span>(fp);</pre></div>
+
+<p>Se puede poner <code>puntero</code> como parámetro de la funcion <em>fread</em> siempre y cuando <code>puntero</code> apunte a un arreglo con 10 espacios para libros.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/fco96">fco96</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
